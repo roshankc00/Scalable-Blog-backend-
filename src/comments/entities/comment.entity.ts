@@ -21,7 +21,7 @@ export class Comment {
   @Field(() => Post)
   post: Post;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.comments)
   @Field(() => User)
   user: User;
 }

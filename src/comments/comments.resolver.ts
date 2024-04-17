@@ -3,14 +3,26 @@ import { CommentsService } from './comments.service';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentInput } from './dto/create-comment.input';
 import { UpdateCommentInput } from './dto/update-comment.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/guards/gqlauthguard';
+import { CurrentUser } from 'src/auth/decorators/currentUser';
+import { User } from 'src/users/entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwtauthguard';
+import { Token } from 'graphql';
+import { TokenPayload } from 'src/auth/auth.service';
 
 @Resolver(() => Comment)
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Mutation(() => Comment)
-  createComment(@Args('createCommentInput') createCommentInput: CreateCommentInput) {
-    return this.commentsService.create(createCommentInput);
+  @UseGuards(JwtAuthGuard)
+  createComment(
+    @Args('createCommentInput') createCommentInput: CreateCommentInput,
+    @CurrentUser() user: TokenPayload,
+  ) {
+    console.log(user);
+    return this.commentsService.create(user.userId, createCommentInput);
   }
 
   @Query(() => [Comment], { name: 'comments' })
@@ -24,11 +36,18 @@ export class CommentsResolver {
   }
 
   @Mutation(() => Comment)
-  updateComment(@Args('updateCommentInput') updateCommentInput: UpdateCommentInput) {
-    return this.commentsService.update(updateCommentInput.id, updateCommentInput);
+  @UseGuards(JwtAuthGuard)
+  updateComment(
+    @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
+  ) {
+    return this.commentsService.update(
+      updateCommentInput.id,
+      updateCommentInput,
+    );
   }
 
   @Mutation(() => Comment)
+  @UseGuards(JwtAuthGuard)
   removeComment(@Args('id', { type: () => Int }) id: number) {
     return this.commentsService.remove(id);
   }

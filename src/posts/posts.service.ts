@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class PostsService {
@@ -12,8 +13,8 @@ export class PostsService {
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     private readonly usersService: UsersService,
   ) {}
-  async create(createPostInput: CreatePostInput) {
-    const user = await this.usersService.findOne(createPostInput.userId);
+  async create(userId: number, createPostInput: CreatePostInput) {
+    const user = await this.usersService.findOne(userId);
     const post = this.postRepository.create({
       ...createPostInput,
       user,

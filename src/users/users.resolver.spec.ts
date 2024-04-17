@@ -46,6 +46,7 @@ describe('UsersResolver', () => {
         password: 'password123',
         name: 'test',
         posts: [],
+        comments: [],
       };
 
       const userExists = null; // No user with the same email
@@ -147,6 +148,7 @@ describe('UsersResolver', () => {
           password: 'hahaha',
           name: 'hahhhahahah',
           posts: [],
+          comments: [],
         },
         {
           id: 2,
@@ -155,6 +157,7 @@ describe('UsersResolver', () => {
           password: 'hahaha',
           name: 'hahhhahahah',
           posts: [],
+          comments: [],
         },
       ];
 

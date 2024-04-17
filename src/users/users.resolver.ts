@@ -5,8 +5,9 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwtauthguard';
-import { RolesDec } from 'src/auth/decorators/role.decorator';
-import { Roles } from './constants/enums/role.enum';
+import { GqlAuthGuard } from 'src/auth/guards/gqlauthguard';
+import { CurrentUser } from 'src/auth/decorators/currentUser';
+import { TokenPayload } from 'src/auth/auth.service';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -19,9 +20,8 @@ export class UsersResolver {
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [User], { name: 'users' })
-  @RolesDec(Roles.USER)
   findAll() {
-    return this.usersService.findAll();
+     return this.usersService.findAll();
   }
 
   @Query(() => User, { name: 'user' })

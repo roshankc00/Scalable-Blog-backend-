@@ -6,6 +6,8 @@ import { PostsService } from 'src/posts/posts.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { TokenPayload } from 'src/auth/auth.service';
 
 @Injectable()
 export class CommentsService {
@@ -15,8 +17,8 @@ export class CommentsService {
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
   ) {}
-  async create(createCommentInput: CreateCommentInput) {
-    const user = await this.usersService.findOne(createCommentInput.userId);
+  async create(userId: number, createCommentInput: CreateCommentInput) {
+    const user = await this.usersService.findOne(userId);
     const post = await this.postService.findOne(createCommentInput.postId);
     const comment = this.commentRepository.create({
       content: createCommentInput.content,

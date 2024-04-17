@@ -17,6 +17,7 @@ export class AuthResolver {
     @Args('createAuthInput') createAuthInput: CreateAuthInput,
     @CurrentUser() user: User,
   ) {
+    console.log(user);
     return this.authService.create(user);
   }
 }
