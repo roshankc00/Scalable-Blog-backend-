@@ -1,26 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {}
+  async create(createUserInput: CreateUserInput) {
+    const userExists = await this.userRepository.findOne({
+      where: {
+        email: createUserInput.email,
+      },
+    });
+    if (userExists) {
+      throw new BadRequestException('User with this email already exists');
+    }
+    const hashedPassdword = await bcrypt.hash(createUserInput.password, 10);
+    const newUser = this.userRepository.create({
+      ...createUserInput,
+      password: hashedPassdword,
+    });
+    return this.userRepository.save(newUser);
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userRepository.find({});
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserInput: UpdateUserInput) {
+    const userExists = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (userExists) {
+      throw new BadRequestException('User with this email already exists');
+    }
+    const updUser = Object.assign(userExists, updateUserInput);
+    return this.userRepository.save(updUser);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const userExists = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (userExists) {
+      throw new BadRequestException('User with this email already exists');
+    }
+    return this.userRepository.remove(userExists);
   }
 }

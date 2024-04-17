@@ -2,15 +2,28 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
-import { DatabaseModule } from './common/database/database.module';
-import { CusLoggerModule } from './common/logger/logger.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
   imports: [
     UsersModule,
+    ConfigModule,
+    TypeOrmModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.getOrThrow('MYSQL_HOST'),
+        port: configService.getOrThrow('MYSQL_HOST'),
+        database: configService.getOrThrow('MYSQL_DATABASE'),
+        username: configService.getOrThrow('MYSQL_USER'),
+        password: configService.getOrThrow('MYSQL_ROOT_PASSWORD'),
+        synchronize: configService.getOrThrow<boolean>('SYNCHRONIZE'),
+        autoLoadEntities: true,
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -19,7 +32,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
         MYSQL_ROOT_PASSWORD: Joi.string().required(),
         MYSQL_PASSWORD: Joi.string().required(),
         MYSQL_HOST: Joi.string().required(),
-        MYSQL_SYNCHRONIZE: Joi.bool().required(),
+        SYNCHRONIZE: Joi.bool().required(),
       }),
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -35,8 +48,6 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
         return graphQLFormattedError;
       },
     }),
-    DatabaseModule,
-    CusLoggerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
