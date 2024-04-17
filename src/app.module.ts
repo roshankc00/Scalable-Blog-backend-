@@ -7,6 +7,8 @@ import * as Joi from 'joi';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostsModule } from './posts/posts.module';
+import { CommentsModule } from './comments/comments.module';
 @Module({
   imports: [
     UsersModule,
@@ -20,7 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         username: configService.getOrThrow('MYSQL_USER'),
         password: configService.getOrThrow('MYSQL_ROOT_PASSWORD'),
         synchronize: configService.getOrThrow<boolean>('SYNCHRONIZE'),
-        autoLoadEntities: true,
+        entities: ['dist/**/*.entity{.ts,.js}'],
       }),
       inject: [ConfigService],
     }),
@@ -48,6 +50,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         return graphQLFormattedError;
       },
     }),
+    PostsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

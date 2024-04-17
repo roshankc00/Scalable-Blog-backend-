@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Roles } from '../constants/enums/role.enum';
+import { Post } from 'src/posts/entities/post.entity';
 
 @ObjectType()
 @Entity()
@@ -31,4 +32,8 @@ export class User {
     default: Roles.USER,
   })
   role: string;
+
+  @OneToMany(() => Post, (post) => post.user)
+  @Field(() => [Post])
+  posts: Post[];
 }

@@ -35,6 +35,7 @@ describe('UsersService', () => {
         email: 'test@example.com',
         password: 'password123',
         name: 'roshan karki',
+        posts: [],
       };
 
       const hashedPassword = await bcrypt.hash(createUserInput.password, 10);
@@ -83,6 +84,7 @@ describe('UsersService', () => {
           password: 'password',
           role: Roles.USER,
           name: 'Roshan karki',
+          posts: [],
         },
         {
           id: 2,
@@ -90,6 +92,7 @@ describe('UsersService', () => {
           password: 'password',
           role: Roles.USER,
           name: 'Roshan karki',
+          posts: [],
         },
       ];
 
@@ -110,6 +113,7 @@ describe('UsersService', () => {
         password: 'password',
         role: Roles.USER,
         name: 'Roshan karki',
+        posts: [],
       };
 
       jest.spyOn(userRepositoryMock, 'findOne').mockResolvedValue(user);
