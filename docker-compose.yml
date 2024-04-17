@@ -1,0 +1,11 @@
+version: '1.2'
+services:
+  mysql:
+    image: mysql
+    environment:
+      - MYSQL_USER=blogapp
+      - MYSQL_DATABASE=blogapp
+      - MYSQL_ROOT_PASSWORD=blogapp
+      - MYSQL_PASSWORD=blogapp
+    ports:
+      - '3306:3306'
