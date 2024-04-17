@@ -25,13 +25,18 @@ export class PostsService {
     return this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.user', 'commentUser')
       .getMany();
   }
 
   findOne(id: number) {
     return this.postRepository
       .createQueryBuilder('post')
+      .where('post.id = :id', { id })
       .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.user', 'commentUser')
       .getOne();
   }
 

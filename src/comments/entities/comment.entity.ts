@@ -7,12 +7,17 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Comment {
   @PrimaryGeneratedColumn()
+  @Field()
   id: number;
 
   @Column()
+  @Field()
   content: string;
 
-  @ManyToOne(() => Post, (post) => post.comments)
+  @ManyToOne(() => Post, (post) => post.comments, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @Field(() => Post)
   post: Post;
 
