@@ -40,7 +40,7 @@ export class UsersService {
     const userExists = await this.userRepository.findOne({
       where: { id },
     });
-    if (userExists) {
+    if (!userExists) {
       throw new BadRequestException('User with this email already exists');
     }
     const updUser = Object.assign(userExists, updateUserInput);
@@ -51,8 +51,8 @@ export class UsersService {
     const userExists = await this.userRepository.findOne({
       where: { id },
     });
-    if (userExists) {
-      throw new BadRequestException('User with this email already exists');
+    if (!userExists) {
+      throw new BadRequestException('User with this email dont  exists');
     }
     return this.userRepository.remove(userExists);
   }

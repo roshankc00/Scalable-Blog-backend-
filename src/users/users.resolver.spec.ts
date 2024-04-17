@@ -35,19 +35,6 @@ describe('UsersResolver', () => {
     expect(resolver).toBeDefined();
   });
 
-  it('should have the findOne functuon', () => {
-    expect(resolver.findOne).toBeDefined();
-  });
-  it('should have the createUser function', () => {
-    expect(resolver.updateUser).toBeDefined();
-  });
-  it('should have the removeUser functuon', () => {
-    expect(resolver.removeUser).toBeDefined();
-  });
-  it('should have the findAll functuon', () => {
-    expect(resolver.findAll).toBeDefined();
-  });
-
   describe('createUser', () => {
     it('should have the createUser function', () => {
       expect(resolver.createUser).toBeDefined();
@@ -147,25 +134,6 @@ describe('UsersResolver', () => {
       );
       expect(result).toBe(userExists);
     });
-
-    it('should throw BadRequestException if user with email already exists', async () => {
-      const userId = 1;
-      const updateUserInput = {
-        id: userId,
-        email: 'updated@example.com',
-      };
-
-      const userExists = new User();
-      userExists.id = userId;
-      userExists.email = 'test@example.com';
-
-      // Mock the findOne method to return the existing user
-      jest.spyOn(userRepositoryMock, 'findOne').mockResolvedValue(userExists);
-
-      await expect(resolver.updateUser(updateUserInput)).rejects.toThrow(
-        BadRequestException,
-      );
-    });
   });
 
   describe('getAllUser', () => {
@@ -215,23 +183,6 @@ describe('UsersResolver', () => {
 
       expect(removeServiceSpy).toHaveBeenCalledWith(userId);
       expect(result).toBe(userExists);
-    });
-
-    it('should throw BadRequestException if user with email already exists', async () => {
-      const userId = 1;
-      const updateUserInput = {
-        id: userId,
-        email: 'updated@example.com',
-      };
-
-      const userExists = new User();
-      userExists.id = userId;
-      userExists.email = 'test@example.com';
-
-      // Mock the findOne method to return the existing user
-      jest.spyOn(userRepositoryMock, 'findOne').mockResolvedValue(userExists);
-
-      await expect(resolver.removeUser(1)).rejects.toThrow(BadRequestException);
     });
   });
 });
